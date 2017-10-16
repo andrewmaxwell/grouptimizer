@@ -5,7 +5,7 @@ import StatGraph from './statGraph.js';
 import getPeople from './getPeople.js';
 
 const initialTemperature = 5;
-const numIterations = 500 * 1000;
+const numIterations = 5e5;
 const iterationsPerFrame = 1000;
 
 const stats = new StatGraph(document.getElementById('statCanvas'));
@@ -108,19 +108,16 @@ const loop = () => {
   }
 
   if (solver.isDone) {
+    const groups = solver.bestState.map(g => ({
+      list: g
+        .sort((a, b) => b.sponsor - a.sponsor || b.contrib - a.contrib)
+        .map(p => p.name)
+        .join(', '),
+      stats: g.stats.map(v => Math.round(v * 100) / 100).join(', ')
+    }));
+
     $('#output').html(
-      solver.bestState
-        .map(
-          g =>
-            g
-              .sort((a, b) => b.sponsor - a.sponsor || b.contrib - a.contrib)
-              .map(p => p.name)
-              .join(', ') +
-            ' (' +
-            g.stats.map(v => Math.round(v * 100) / 100).join(', ') +
-            ')'
-        )
-        .join('\n')
+      groups.map(g => `<div>${g.list} (${g.stats})</div>`).join('')
     );
     console.log(solver.minCost);
   } else {
