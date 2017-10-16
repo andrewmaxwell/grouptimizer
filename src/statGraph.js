@@ -1,4 +1,4 @@
-class StatGraph {
+export default class StatGraph {
 	constructor(canvas){
 		this.canvas = canvas;
 		this.context = this.canvas.getContext('2d');
@@ -52,5 +52,3 @@ class StatGraph {
 		T.fillText(this.graphs[0].data.length, 0, H - 2);
 	}
 }
-
-module.exports = StatGraph;

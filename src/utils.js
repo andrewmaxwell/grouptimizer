@@ -20,7 +20,7 @@ const average = nums => {
 	return sum / nums.length;
 };
 
-const variance = nums => {
+export const variance = nums => {
 	let avg = average(nums), squareDiffSum = 0;
 	for (let i = 0; i < nums.length; i++){
 		squareDiffSum += square(nums[i] - avg);
@@ -28,16 +28,12 @@ const variance = nums => {
 	return squareDiffSum / nums.length;
 };
 
-module.exports = {
-	rand(min, max){
-		if (max === undefined){
-			max = min;
-			min = 0;
-		}
-		return min + Math.floor(Math.random() * (max - min));
-	},
-	variance,
-	standardDeviation(nums){
-		return Math.sqrt(variance(nums));
+export const rand = (min, max) => {
+	if (max === undefined){
+		max = min;
+		min = 0;
 	}
+	return min + Math.floor(Math.random() * (max - min));
 };
+
+export const standardDeviation = nums => Math.sqrt(variance(nums));

@@ -1,4 +1,4 @@
-class SimulatedAnnealingSolver {
+export default class SimulatedAnnealingSolver {
 	constructor(opts){
 		this.getCost = opts.getCost;
 		this.generateNeighbor = opts.generateNeighbor;
@@ -35,5 +35,3 @@ class SimulatedAnnealingSolver {
 		this.isDone = this.iterations >= this.maxIterations;
 	}
 }
-
-module.exports = SimulatedAnnealingSolver;

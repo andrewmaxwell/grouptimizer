@@ -1,8 +1,6 @@
-const $ = require('jquery');
-
 const dataFields = ['name', 'gender', 'absent', 'contrib', 'weights', 'sponsor'];
 
-module.exports = dataUrl => $.getJSON(dataUrl).then(data => {
+export default dataUrl => $.getJSON(dataUrl).then(data => {
 	const people = data.feed.entry.map(row => {
 		const person = {};
 

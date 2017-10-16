@@ -1,20 +1,18 @@
-console.clear();
+import SimulatedAnnealingSolver from './solver.js';
+import {rand, standardDeviation} from './utils.js';
+import StatGraph from './statGraph.js';
+import getPeople from './getPeople.js';
 
 const initialTemperature = 5;
 const numIterations = 500 * 1000;
 const iterationsPerFrame = 1000;
-
-const $ = require('jquery');
-const SimulatedAnnealingSolver = require('./solver');
-const {rand, standardDeviation} = require('./utils');
-const StatGraph = require('./statGraph');
 
 const stats = new StatGraph(document.getElementById('statCanvas'));
 const annealingGraph = stats.addGraph({color: 'red'});
 const temperatureGraph = stats.addGraph({color: 'green', forceMin: 0});
 
 const dataUrl = '//spreadsheets.google.com/feeds/list/1GFt1QV-LEui12pWztIMXwblcoLy5xdkTQBSQrlg50GY/od6/public/values?alt=json-in-script&callback=?';
-const getPeople = require('./getPeople');
+
 
 const solver = window.top.solver = new SimulatedAnnealingSolver({
 	getCost: grouping => {
@@ -148,3 +146,5 @@ $('#go').on('click', () => {
 
 	});
 });//.click();
+
+export default {};
