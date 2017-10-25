@@ -23,4 +23,16 @@ export const rand = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
 };
 
+export const randWhere = (max, func) => {
+  let res;
+  let limit = 100;
+  do {
+    res = Math.floor(Math.random() * max);
+  } while (limit-- && func(res));
+  if (!limit) {
+    console.error('exceeded limit', res);
+  }
+  return res;
+};
+
 export const standardDeviation = nums => Math.sqrt(variance(nums));

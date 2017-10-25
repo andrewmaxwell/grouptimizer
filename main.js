@@ -1,12 +1,8 @@
 /* global $ */
 import SimulatedAnnealingSolver from './solver.js';
-import {rand, standardDeviation} from './utils.js';
+import {rand, standardDeviation, randWhere} from './utils.js';
 import StatGraph from './statGraph.js';
 import getPeople from './getPeople.js';
-
-const initialTemperature = 5;
-const numIterations = 5e5;
-const iterationsPerFrame = 1000;
 
 const stats = new StatGraph(document.getElementById('statCanvas'));
 const annealingGraph = stats.addGraph({color: 'red'});
@@ -76,10 +72,7 @@ const solver = (window.top.solver = new SimulatedAnnealingSolver({
     const newGrouping = grouping.slice(0);
 
     const groupIndex1 = rand(newGrouping.length);
-    let groupIndex2;
-    do {
-      groupIndex2 = rand(newGrouping.length);
-    } while (groupIndex2 === groupIndex1);
+    const groupIndex2 = randWhere(newGrouping.length, r => r === groupIndex1);
 
     const group1 = (newGrouping[groupIndex1] = newGrouping[groupIndex1].slice(
       0
@@ -89,10 +82,10 @@ const solver = (window.top.solver = new SimulatedAnnealingSolver({
     ));
 
     const personIndex1 = rand(group1.length);
-    let personIndex2;
-    do {
-      personIndex2 = rand(group2.length);
-    } while (group1[personIndex1].sponsor !== group2[personIndex2].sponsor); // can't swap sponsors with students
+    const personIndex2 = randWhere(
+      group2.length,
+      r => group1[personIndex1].sponsor !== group2[r].sponsor
+    );
 
     const temp = group1[personIndex1];
     group1[personIndex1] = group2[personIndex2];
@@ -103,7 +96,7 @@ const solver = (window.top.solver = new SimulatedAnnealingSolver({
 }));
 
 const loop = () => {
-  for (let i = 0; !solver.isDone && i < iterationsPerFrame; i++) {
+  for (let i = 0; !solver.isDone && i < 1000; i++) {
     solver.iterate();
   }
 
@@ -134,11 +127,18 @@ $(window)
   })
   .trigger('resize');
 
-$('#go').on('click', () => {
+$('button').on('click', function() {
   const numGroups = parseFloat($('#numGroups').val()) || 4;
+  const gender = $(this).data('gender');
 
   getPeople(dataUrl).then(people => {
     people.sort((a, b) => b.contrib - a.contrib);
+
+    if (gender) {
+      people = people.filter(p => p.gender === gender);
+    }
+
+    console.log(people);
 
     const initialState = [];
     for (let i = 0; i < numGroups; i++) initialState[i] = [];
@@ -148,9 +148,9 @@ $('#go').on('click', () => {
     people.filter(p => !p.sponsor).forEach((p, i) => {
       initialState[i % numGroups].push(p);
     });
-    solver.init(initialState, initialTemperature, numIterations);
+    solver.init(initialState, 5, 10000 * people.length);
     stats.reset();
 
     loop();
   });
-}); //.click();
+});
